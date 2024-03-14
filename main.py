@@ -1,6 +1,7 @@
 import sys, pygame as pg
 import requests
 import copy
+import math
 
 pg.init()
 ## create screen
@@ -62,7 +63,7 @@ def draw_numbers():
 def highlight_cell(position):
     x_buffer = y_buffer = SCALE/10
     # translucent_yellow = (255, 255, 0, 20)
-    pg.draw.rect(screen, pg.Color('Red'), ((position[0]*SCALE) + x_buffer, (position[1]*SCALE) + y_buffer, SCALE - 2*x_buffer, SCALE - 2*y_buffer), SCALE*(1/40))
+    pg.draw.rect(screen, pg.Color('Red'), ((position[0]*SCALE) + x_buffer, (position[1]*SCALE) + y_buffer, SCALE - 2*x_buffer, SCALE - 2*y_buffer), math.ceil(SCALE*(1/40)))
     pg.display.update()
 
 
