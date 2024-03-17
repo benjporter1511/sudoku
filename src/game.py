@@ -57,6 +57,26 @@ class Game:
                     self.screen.blit(value, pg.Vector2(((col + 1) * SCALE) + X_TEXT_BUFFER, ((row + 1) * SCALE) + Y_TEXT_BUFFER))
 
 
+    def is_board_full(self):
+        ## checks if any entry in the grid is 0 which corresponds to blank value
+        for row in self.grid:
+            for cell in row:
+                if cell == 0:
+                    return False
+        return True
+    
+    def is_board_correct(self):
+        ## if any value in grid does not equal solution then returns false
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid[0])):
+                if self.grid[i][j] != self.solution[i][j]:
+                    return False
+        return True
+    
+    def reset_grid(self):
+        self.grid = copy.deepcopy(self.original_grid)
+
+
     def highlight_cell(self, position):
         x_buffer = y_buffer = SCALE/10
         # translucent_yellow = (255, 255, 0, 20)
@@ -124,6 +144,10 @@ class Game:
                 ## we then call insert value function, x and y values for grid box will be x,y position above / SCALE
                 self.insert_values(self.screen, (pos[0]//SCALE, pos[1]//SCALE))
             if event.type == pg.QUIT: sys.exit()
+
+        """
+        NEXT STEP IS TO ADD LOGIC TO CHECK FOR A WIN STATE, OR TO RESTART THE GAME IF WANTED
+        """
 
         self.draw_background()
         self.draw_numbers()
