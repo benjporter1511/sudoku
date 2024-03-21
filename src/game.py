@@ -53,9 +53,30 @@ class Game:
                 output = self.grid[row][col]
                 if output in list(range(1,10)):
                 ## only want to write numbers 1 - 9
-                    value = self.font.render(str(output), True, pg.Color("Black"))
+                    ## want our added numbers to be slightly different colour so we know which are part of our solution
+                    if self.grid[row][col] == self.original_grid[row][col]:
+                        value = self.font.render(str(output), True, pg.Color("Black"))
+                    else:
+                        value = self.font.render(str(output), True, pg.Color("Gray"))
                     self.screen.blit(value, pg.Vector2(((col + 1) * SCALE) + X_TEXT_BUFFER, ((row + 1) * SCALE) + Y_TEXT_BUFFER))
 
+    def display_message(self, message, position):
+        # Render the message text
+        message_text = self.font.render(message, True, pg.Color('Black'))
+        # Calculate the position to center the text box
+        text_box_rect = message_text.get_rect(center=position)
+        # Calculate the size of the text box
+        text_box_width = text_box_rect.width + SCALE*1.2  # Add some padding around the text
+        text_box_height = text_box_rect.height + SCALE
+        # Create a white background rectangle
+        text_box_surface = pg.Surface((text_box_width, text_box_height))
+        text_box_surface.fill(pg.Color('White'))
+        # Set the position of the text box
+        text_box_rect.center = position
+        # Draw the white background rectangle onto the screen
+        self.screen.blit(text_box_surface, text_box_rect)
+        # Draw the text box onto the screen
+        self.screen.blit(message_text, message_text.get_rect(center=text_box_rect.center))
 
     def is_board_full(self):
         ## checks if any entry in the grid is 0 which corresponds to blank value
@@ -75,7 +96,6 @@ class Game:
     
     def reset_grid(self):
         self.grid = copy.deepcopy(self.original_grid)
-
 
     def highlight_cell(self, position):
         x_buffer = y_buffer = SCALE/10
@@ -148,6 +168,21 @@ class Game:
         """
         NEXT STEP IS TO ADD LOGIC TO CHECK FOR A WIN STATE, OR TO RESTART THE GAME IF WANTED
         """
+        ## check if board is full
+        if self.is_board_full():
+            ## now check if solution is correct
+            if self.is_board_correct():
+                ## win state, need to do something here
+                self.display_message("WOO HOO! Solution is CORRECT!", (SCREEN_SIZE_X // 2, SCREEN_SIZE_Y // 2))
+                pg.display.flip()
+                pg.time.delay(5000)
+                ## should we do something else here?
+            else:
+                ## could have some logic here to say you were unsucessful
+                self.display_message("Solution is incorrect!", (SCREEN_SIZE_X // 2, SCREEN_SIZE_Y // 2))
+                pg.display.flip()
+                pg.time.delay(5000)
+                self.reset_grid()
 
         self.draw_background()
         self.draw_numbers()
